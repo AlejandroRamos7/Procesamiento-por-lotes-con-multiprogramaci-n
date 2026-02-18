@@ -44,7 +44,7 @@ def generar_datos(num):
         elif operacion == "**":
             resultado =  a**b
         
-        procesos.append([id_programador, tiempo_maximo, operacion, a, b, resultado])     
+        procesos.append([id_programador, tiempo_maximo, operacion, a, b, resultado, 0])     
     return procesos
 
 def crear_lotes(procesos):
@@ -61,18 +61,17 @@ def mostrar(lotes):
     while numero_de_lotes < len(lotes):         
         lote = lotes[numero_de_lotes]         
         
-        print("==============================================")
+        print("----------------------------------------------")
         print(f"LOTE EN EJECUCION: {numero_de_lotes + 1}")
         for p in lote:
             print(f"ID: {p[0]} | Tiempo Maximo: {p[1]}")
-        print("==============================================")
+        print("----------------------------------------------")
 
         for i in lote:             
-            tiempo_estimado = 0                         
+            tiempo_estimado = i[6]
+            interrumpido = False                     
 
-            while tiempo_estimado < i[1]:         
-                
-                limpiar()     
+            while tiempo_estimado < i[1]:            
                 
                 if msvcrt.kbhit():
                     tecla = msvcrt.getch().decode().upper()
@@ -83,20 +82,30 @@ def mostrar(lotes):
                             if msvcrt.kbhit():
                                 if msvcrt.getch().decode().upper() == "C":
                                     break
-
                     elif tecla == "I":
+                        i[6] = tiempo_estimado
+                        lote.append(lote.pop(lote.index(i)))
+                        interrumpido = True
                         break
 
                     elif tecla == "E":
                         i[5] = "ERROR"
                         break
+                limpiar()
 
                 pendientes = len(lotes) - numero_de_lotes - 1  
 
                 print("------------------------------------------------")                 
                 print(f"Lotes pendientes: {pendientes}")                 
                 print(f"Lote actual: {numero_de_lotes + 1}")                 
-                print("------------------------------------------------")                  
+                print("------------------------------------------------")     
+                
+                print("------------------------------------------------")                 
+                print(f"PROCESOS DEL LOTE: {numero_de_lotes+1}")                 
+                for ejecucion in lote:
+                    if ejecucion not in procesados and ejecucion != i:
+                        print(f"ID: {ejecucion[0]}")
+                print("------------------------------------------------")
 
                 actual = [                                        
                     f"Operacion: {i[2]}  Valores: {i[3]} y {i[4]}",                     
@@ -113,12 +122,13 @@ def mostrar(lotes):
                         resultado = j[5]
                     else:
                         resultado = f"{j[5]:.2f}"
+                    
+                    separador = "-------------------------------------------------------"
 
-                    terminados.extend([                         
-                        "",                         
-                        f"ID: {j[0]}",                         
-                        f"Operacion: {j[2]}  Valores: {j[3]} y {j[4]}",  
-                        f"Resultado: {resultado}"                      
+                    terminados.extend([
+                        separador,                         
+                        f"ID: {j[0]} / Operacion: {j[2]} / Valores: {j[3]} y {j[4]} / Resultado: {resultado}",
+                        separador
                     ])                  
 
                 from itertools import zip_longest                 
@@ -136,7 +146,8 @@ def mostrar(lotes):
                 tiempo += 1                 
                 tiempo_estimado += 1             
 
-            procesados.append(i)                 
+            if not interrumpido:
+                procesados.append(i)                 
 
         numero_de_lotes += 1     
 
