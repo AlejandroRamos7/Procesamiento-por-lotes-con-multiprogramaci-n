@@ -7,16 +7,15 @@ def limpiar():
     os.system("cls")
 
 def generar_datos(num):
-    procesos = []
-    lista_id = []
-
+    procesos = [] #guardo los procesos que se crean
+    lista_id = [] #se gusradan las id, para buscar id repetido
 
     for i in range(num):
 
         while True:
             id_programador = random.randint(0,1000)
             if id_programador in lista_id:
-                print("ID repetido, intenta otro")         
+                print("ID repetido, se creara otro")         
             else:             
                 lista_id.append(id_programador)             
                 break    
@@ -27,7 +26,17 @@ def generar_datos(num):
         operacion = random.choice(operaciones)
 
         a = random.randint(1,10)
-        b = random.randint(1,10) 
+        b = random.randint(1,10)
+        
+        while True:
+            if operacion == "/" or operacion == "%":
+                if b==0:
+                    a = random.randint(1,10)
+                    b = random.randint(1,10)
+                else:
+                    break
+            else:
+                break
 
         if operacion == "+":
             resultado =  a+b
@@ -75,7 +84,7 @@ def mostrar(lotes):
                 n+=1
                 continue
 
-            tiempo_estimado = i[6]
+            tiempo_estimado = i[6] #es el tiempo avanzado
             interrumpido = False 
 
             while tiempo_estimado < i[1]:
@@ -87,7 +96,7 @@ def mostrar(lotes):
                         print("\nPROGRAMA PAUSADO - Presione C para continuar")
                         while True:
                             if msvcrt.kbhit():
-                                if msvcrt.getch().decode().upper() == "C":
+                                if msvcrt.getch().decode().upper() == "C": #caracter/ convierte/mayuscula 
                                     break
 
                     elif tecla == "I":
@@ -155,7 +164,7 @@ def mostrar(lotes):
                 print(f"Tiempo global: {tiempo+1}")                 
                 print()                   
 
-                time.sleep(1.5)                 
+                time.sleep(1)                 
 
                 tiempo += 1                 
                 tiempo_estimado += 1             
@@ -176,6 +185,7 @@ def mostrar(lotes):
     for i in procesados:
 
         print("----------------------------------------------------------")                  
+        print (f"Lote: {i[7]}")
         print (f"ID: {i[0]}")         
 
         if isinstance(i[5], str):
