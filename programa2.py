@@ -112,6 +112,7 @@ def mostrar(lotes):
                 limpiar()
 
                 pendientes = len(lotes) - numero_de_lotes - 1  
+                i[6] = tiempo_estimado
 
                 print("------------------------------------------------")                 
                 print(f"Lotes pendientes: {pendientes}")                 
@@ -122,7 +123,7 @@ def mostrar(lotes):
                 print(f"PROCESOS DEL LOTE: {numero_de_lotes+1}")                 
                 for ejecucion in lote:
                     if ejecucion not in procesados and ejecucion != i:
-                        print(f"ID: {ejecucion[0]}")
+                        print(f"ID: {ejecucion[0]} tiempo maximo: {ejecucion[1]} tiempo avanzado: {ejecucion[6]}")
                 print("------------------------------------------------")
 
                 actual = [                                        
@@ -143,12 +144,12 @@ def mostrar(lotes):
                         resultado = f"{j[5]:.2f}"
 
                     separador = "-------------------------------------------------------"
+                    
 
                     terminados.extend([
                         separador,
                         f"LOTE: {j[7]}",
-                        f"ID: {j[0]} / Operacion: {j[2]} / Valores: {j[3]} y {j[4]} / Resultado: {resultado}",
-                        separador
+                        f"ID: {j[0]} / Operacion: {j[2]} / Valores: {j[3]} y {j[4]} / Resultado: {resultado}"
                     ])
 
                 from itertools import zip_longest                 
@@ -175,9 +176,9 @@ def mostrar(lotes):
             
             i.append(numero_de_lotes + 1)
             procesados.append(i)
-            n+=1                 
-
-        numero_de_lotes += 1     
+            n+=1      
+        numero_de_lotes += 1    
+        procesados.clear() 
 
     print("-------------------------------")     
     print("PROCESOS COMPLETOS FINALES")     
